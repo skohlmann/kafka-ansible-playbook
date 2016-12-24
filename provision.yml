@@ -1,0 +1,56 @@
+---
+- hosts: all
+  become: yes
+  vars:
+    kafka:
+      version: 0.10.1.1
+      mirror: http://www-us.apache.org/dist
+      dataDir: /var/lib/kafka
+      installDir: "/opt"
+      
+  tasks:
+    - name: Java | Add repo for java 8
+      apt_repository: repo='ppa:webupd8team/java' state=present
+
+    - name: Java | Set licence selected
+      shell: /bin/echo debconf shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+      sudo: yes
+
+    - name: Java | Set licence seen
+      shell: /bin/echo debconf shared/accepted-oracle-license-v1-1 seen true | /usr/bin/debconf-set-selections
+      sudo: yes
+
+    - name: Java | Install
+      apt: name=oracle-java8-installer state=latest update-cache=yes force=yes
+      sudo: yes
+      
+      # Kafka
+    - name: Kafka | Set internal variable kafka_name
+      set_fact: kafka_name="kafka_2.10-{{kafka.version}}"
+    - name: Kafka | Set internal variable kafka_dir
+      set_fact: kafka_dir="{{kafka.installDir}}/{{kafka_name}}"
+
+    - name: Kafka | Download
+      get_url:
+        url: "https://archive.apache.org/dist/kafka/{{kafka.version}}/{{kafka_name}}.tgz"
+        dest: "/tmp"
+        
+    - name: Kafka | Ensure tar is extracted
+      command: tar xzf /tmp/{{kafka_name}}.tgz chdir="{{kafka.installDir}}"
+
+    - name: Kafka | Set Server config
+      template:
+        src: "templates/server.properties"
+        dest: "{{kafka_dir}}/config"
+
+    - name: Kafka | configure server.properties with broker ID {{cluster_node_seq}}
+      replace: dest={{kafka_dir}}/config/server.properties regexp='REPLACEMENT_KAFKA_BROKER_ID' replace='{{cluster_node_seq}}'
+
+    - name: Kafka | Setup init.d environment
+      copy: src=init.d/kafka dest=/etc/init.d/ mode=0755
+
+    - name: Kafka | Configure init.d/kafka
+      replace: dest=/etc/init.d/kafka regexp='KAFKA_VERSION_REPLACEMENT' replace='{{kafka.version}}'
+
+    - name: Kafka | Run service
+      service: name=kafka state=started enabled=yes
