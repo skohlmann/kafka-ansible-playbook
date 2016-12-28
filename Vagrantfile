@@ -11,7 +11,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   cluster = {
     'kafka-node-1' => "192.168.5.200",
-#    'kafka-node-2' => "192.168.5.201",
+    'kafka-node-2' => "192.168.5.201",
   }
 
   cluster.each_with_index do |(short_name, ip), idx|
