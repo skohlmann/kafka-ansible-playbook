@@ -7,6 +7,7 @@
       mirror: http://www-us.apache.org/dist
       dataDir: /var/lib/kafka
       installDir: "/opt"
+      serverMemory: "512M"
       
   tasks:
     - name: Java | Add repo for java 8
@@ -29,7 +30,7 @@
       set_fact: kafka_name="kafka_2.10-{{kafka.version}}"
     - name: Kafka | Set internal variable kafka_dir
       set_fact: kafka_dir="{{kafka.installDir}}/{{kafka_name}}"
-
+      
     - name: Kafka | Download
       get_url:
         url: "https://archive.apache.org/dist/kafka/{{kafka.version}}/{{kafka_name}}.tgz"
@@ -42,13 +43,16 @@
       template:
         src: "templates/server.properties"
         dest: "{{kafka_dir}}/config"
-
     - name: Kafka | configure server.properties with broker ID {{cluster_node_seq}}
       replace: dest={{kafka_dir}}/config/server.properties regexp='REPLACEMENT_KAFKA_BROKER_ID' replace='{{cluster_node_seq}}'
 
+    - name: Kafka | Configure Server memory
+      copy: src=kafka-bin/kafka-server-start.sh dest="{{kafka_dir}}/bin" mode=0755
+    - name: Kafka | Configure init.d/kafka
+      replace: dest={{kafka_dir}}/bin/kafka-server-start.sh regexp='KAFKA_REPLACEMENT_MAX_MEMORY' replace='{{kafka.serverMemory}}'
+
     - name: Kafka | Setup init.d environment
       copy: src=init.d/kafka dest=/etc/init.d/ mode=0755
-
     - name: Kafka | Configure init.d/kafka
       replace: dest=/etc/init.d/kafka regexp='KAFKA_VERSION_REPLACEMENT' replace='{{kafka.version}}'
 
