@@ -58,3 +58,9 @@
 
     - name: Kafka | Run service
       service: name=kafka state=started enabled=yes
+
+    - name: Kafka | Configure autostart
+      file:
+        src: /etc/init.d/kafka
+        dest: /etc/rc3.d/S99kafka
+        state: link
