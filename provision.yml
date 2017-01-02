@@ -51,6 +51,11 @@
     - name: Kafka | Configure init.d/kafka
       replace: dest={{kafka_dir}}/bin/kafka-server-start.sh regexp='KAFKA_REPLACEMENT_MAX_MEMORY' replace='{{kafka.serverMemory}}'
 
+    - name: Kafka | Copy server.properties
+      copy: src=config/server.properties dest="{{kafka_dir}}/config" mode=0644
+    - name: Kafka | Configure server.properties listener
+      replace: dest={{kafka_dir}}/config/server.properties regexp='KAFKA_HOSTNAME_REPLACEMENT' replace='{{machine_ip}}'
+
     - name: Kafka | Setup init.d environment
       copy: src=init.d/kafka dest=/etc/init.d/ mode=0755
     - name: Kafka | Configure init.d/kafka

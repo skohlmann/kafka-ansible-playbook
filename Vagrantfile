@@ -28,7 +28,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         ansible.playbook = "provision.yml"
         ansible.extra_vars = {
           cluster_node_seq: idx + 1,
-          cluster_ip_addresses: cluster.values
+          cluster_ip_addresses: cluster.values,
+          machine_ip: ip
         }
       end
     end
