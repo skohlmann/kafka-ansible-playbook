@@ -30,11 +30,11 @@ __Note__: This is a proof of concept and test installation only. Do ot use in pr
 
 With
 
-# `vagrant halt`
+- `vagrant halt`
 
 you stop the cluster and can restart the cluster with
 
-# `vagrant reload`
+- `vagrant reload`
 
 # Test setup
 
