@@ -4,10 +4,11 @@
   vars:
     kafka:
       version: 0.10.1.1
-      mirror: http://www-us.apache.org/dist
+      mirror: https://archive.apache.org/dist/kafka
       dataDir: /var/lib/kafka
       installDir: "/opt"
       serverMemory: "512M"
+      scalaVersion: 2.11
     zookeeper:
       ip: "192.168.5.100:2181,192.168.5.100:2181"
       
@@ -29,13 +30,13 @@
       
       # Kafka
     - name: Kafka | Set internal variable kafka_name
-      set_fact: kafka_name="kafka_2.10-{{kafka.version}}"
+      set_fact: kafka_name="kafka_{{kafka.scalaVersion}}-{{kafka.version}}"
     - name: Kafka | Set internal variable kafka_dir
       set_fact: kafka_dir="{{kafka.installDir}}/{{kafka_name}}"
       
     - name: Kafka | Download
       get_url:
-        url: "https://archive.apache.org/dist/kafka/{{kafka.version}}/{{kafka_name}}.tgz"
+        url: "{{kafka.mirror}}/{{kafka.version}}/{{kafka_name}}.tgz"
         dest: "/tmp"
         
     - name: Kafka | Ensure tar is extracted
