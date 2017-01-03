@@ -8,6 +8,8 @@
       dataDir: /var/lib/kafka
       installDir: "/opt"
       serverMemory: "512M"
+    zookeeper:
+      ip: "192.168.5.100:2181,192.168.5.100:2181"
       
   tasks:
     - name: Java | Add repo for java 8
@@ -43,20 +45,18 @@
       template:
         src: "templates/server.properties"
         dest: "{{kafka_dir}}/config"
-    - name: Kafka | configure server.properties with broker ID {{cluster_node_seq}}
-      replace: dest={{kafka_dir}}/config/server.properties regexp='REPLACEMENT_KAFKA_BROKER_ID' replace='{{cluster_node_seq}}'
-    - name: Kafka | Configure server.properties listener
-      replace: dest={{kafka_dir}}/config/server.properties regexp='KAFKA_HOSTNAME_REPLACEMENT' replace='{{machine_ip}}'
 
-    - name: Kafka | Configure Server memory
-      copy: src=kafka-bin/kafka-server-start.sh dest="{{kafka_dir}}/bin" mode=0755
-    - name: Kafka | Configure init.d/kafka
-      replace: dest={{kafka_dir}}/bin/kafka-server-start.sh regexp='KAFKA_REPLACEMENT_MAX_MEMORY' replace='{{kafka.serverMemory}}'
+    - name: Kafka | Set Server Startup
+      template:
+        src: "templates/kafka-server-start.sh"
+        dest: "{{kafka_dir}}/bin"
+        mode: 0755
 
-    - name: Kafka | Setup init.d environment
-      copy: src=init.d/kafka dest=/etc/init.d/ mode=0755
-    - name: Kafka | Configure init.d/kafka
-      replace: dest=/etc/init.d/kafka regexp='KAFKA_VERSION_REPLACEMENT' replace='{{kafka.version}}'
+    - name: Kafka | Set init.d environment
+      template:
+        src: "templates/kafka"
+        dest: "/etc/init.d/"
+        mode: 0755
 
     - name: Kafka | Run service
       service: name=kafka state=started enabled=yes

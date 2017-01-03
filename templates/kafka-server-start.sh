@@ -26,7 +26,7 @@ if [ "x$KAFKA_LOG4J_OPTS" = "x" ]; then
 fi
 
 if [ "x$KAFKA_HEAP_OPTS" = "x" ]; then
-    export KAFKA_HEAP_OPTS="-XmxKAFKA_REPLACEMENT_MAX_MEMORY -XmsKAFKA_REPLACEMENT_MAX_MEMORY"
+    export KAFKA_HEAP_OPTS="-Xmx{{ kafka.serverMemory }} -Xms{{ kafka.serverMemory }}"
 fi
 
 EXTRA_ARGS=${EXTRA_ARGS-'-name kafkaServer -loggc'}

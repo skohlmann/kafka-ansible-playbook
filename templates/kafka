@@ -11,7 +11,7 @@
 
 set -e
 
-export KAFKA_HOME=/opt/kafka_2.10-KAFKA_VERSION_REPLACEMENT
+export KAFKA_HOME=/opt/kafka_2.10-{{ kafka.version }}
 
 # /etc/init.d/zookeeper: start and stop the Zookeeper daemon
 
