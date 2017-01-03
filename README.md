@@ -26,6 +26,16 @@ __Note__: This is a proof of concept and test installation only. Do ot use in pr
 5. Enter cloned repository
 6. Execute `vagrant provision && vagrant up`
 
+## Shotdown and restart
+
+With
+
+# `vagrant halt`
+
+you stop the cluster and can restart the cluster with
+
+# `vagrant reload`
+
 # Test setup
 
 1. Connect to Kafka service with: `vagrant ssh kafka-node-1`
