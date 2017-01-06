@@ -1,19 +1,19 @@
 #! /bin/sh
 
 ### BEGIN INIT INFO
-# Provides:		zookeeper
+# Provides:		kafka
 # Required-Start:	$remote_fs $syslog
 # Required-Stop:	$remote_fs $syslog
 # Default-Start:	2 3 4 5
 # Default-Stop:		
-# Short-Description:	Zookeeper daemon
+# Short-Description:	Kafka daemon
 ### END INIT INFO
 
 set -e
 
 export KAFKA_HOME=/opt/kafka_{{ kafka.scalaVersion }}-{{ kafka.version }}
 
-# /etc/init.d/zookeeper: start and stop the Zookeeper daemon
+# /etc/init.d/kafka: start and stop the Kafka daemon
 
 . /lib/lsb/init-functions
 
