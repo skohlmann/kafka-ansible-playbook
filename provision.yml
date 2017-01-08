@@ -17,16 +17,16 @@
       apt_repository: repo='ppa:webupd8team/java' state=present
 
     - name: Java | Set licence selected
+      become_user: root
       shell: /bin/echo debconf shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
-      sudo: yes
 
     - name: Java | Set licence seen
+      become_user: root
       shell: /bin/echo debconf shared/accepted-oracle-license-v1-1 seen true | /usr/bin/debconf-set-selections
-      sudo: yes
 
     - name: Java | Install
+      become_user: root
       apt: name=oracle-java8-installer state=latest update-cache=yes force=yes
-      sudo: yes
       
       # Kafka
     - name: Kafka | Set internal variable kafka_name
@@ -65,5 +65,11 @@
     - name: Kafka | Configure autostart
       file:
         src: /etc/init.d/kafka
-        dest: /etc/rc3.d/S99kafka
+        dest: /etc/rc2.d/S99kafka
         state: link
+
+    - name: Kafka | Service
+      service:
+        name: kafka
+        enabled: yes
+        state: reloaded
