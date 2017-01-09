@@ -10,7 +10,7 @@
       serverMemory: "512M"
       scalaVersion: 2.11
     zookeeper:
-      ip: "192.168.5.100:2181,192.168.5.100:2181"
+      ip: "192.168.5.100:2181,192.168.5.100:2181,192.168.5.102:2181"
       
   tasks:
     - name: Java | Add repo for java 8
