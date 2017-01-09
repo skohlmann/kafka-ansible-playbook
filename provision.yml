@@ -16,11 +16,11 @@
     - name: Java | Add repo for java 8
       apt_repository: repo='ppa:webupd8team/java' state=present
 
-    - name: Java | Set licence selected
+    - name: Java | Set license selected
       become_user: root
       shell: /bin/echo debconf shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
 
-    - name: Java | Set licence seen
+    - name: Java | Set license seen
       become_user: root
       shell: /bin/echo debconf shared/accepted-oracle-license-v1-1 seen true | /usr/bin/debconf-set-selections
 
