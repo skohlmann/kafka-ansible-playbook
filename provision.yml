@@ -3,7 +3,7 @@
   become: yes
   vars:
     kafka:
-      version: 0.10.1.1
+      version: 1.0.0
       mirror: https://archive.apache.org/dist/kafka
       dataDir: /var/lib/kafka
       installDir: "/opt"
@@ -13,20 +13,26 @@
       ip: "192.168.5.100:2181,192.168.5.100:2181,192.168.5.102:2181"
       
   tasks:
-    - name: Java | Add repo for java 8
-      apt_repository: repo='ppa:webupd8team/java' state=present
+    - name: Install add-apt-repostory
+      become: yes
+      apt: name=software-properties-common state=latest
 
-    - name: Java | Set license selected
-      become_user: root
-      shell: /bin/echo debconf shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+    - name: Add Oracle Java Repository
+      become: yes
+      apt_repository: repo='ppa:webupd8team/java'
 
-    - name: Java | Set license seen
-      become_user: root
-      shell: /bin/echo debconf shared/accepted-oracle-license-v1-1 seen true | /usr/bin/debconf-set-selections
+    - name: Accept Java 8 License
+      become: yes
+      debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
 
-    - name: Java | Install
-      become_user: root
-      apt: name=oracle-java8-installer state=latest update-cache=yes force=yes
+    - name: Install Oracle Java 8
+      become: yes
+      apt: name={{item}} state=latest
+      with_items:
+        - oracle-java8-installer
+        - ca-certificates
+        - oracle-java8-set-default
+
       
       # Kafka
     - name: Kafka | Set internal variable kafka_name
