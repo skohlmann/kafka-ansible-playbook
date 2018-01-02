@@ -4,7 +4,7 @@
   vars:
     kafka:
       version: 1.0.0
-      mirror: https://archive.apache.org/dist/kafka
+      mirror: http://www-eu.apache.org/dist/kafka/
       dataDir: /var/lib/kafka
       installDir: "/opt"
       serverMemory: "512M"
@@ -51,6 +51,11 @@
     - name: Kafka | Set Server config
       template:
         src: "templates/server.properties"
+        dest: "{{kafka_dir}}/config"
+
+    - name: Kafka | Set Consumer config
+      template:
+        src: "templates/consumer.properties"
         dest: "{{kafka_dir}}/config"
 
     - name: Kafka | Set Server Startup
